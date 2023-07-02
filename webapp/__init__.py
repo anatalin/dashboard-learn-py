@@ -1,45 +1,22 @@
-from flask import Flask, render_template
-from webapp.weather import get_weather
-from webapp.model import db, WeatherReport
+from flask import Flask
+from flask_celeryext import FlaskCeleryExt
+from flask_sqlalchemy import SQLAlchemy
+from webapp.celery.celery_utils import make_celery
+
+
+db = SQLAlchemy()
+ext_celery = FlaskCeleryExt(create_celery_app=make_celery)
+
+from webapp.blueprints.main import bp as main_bp
+from webapp.blueprints.weather import bp as weather_bp
 
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     db.init_app(app)
+    ext_celery.init_app(app)
 
-    @app.route("/")
-    def hello():
-        return "Привет!"
+    app.register_blueprint(main_bp)
+    app.register_blueprint(weather_bp)
 
-    @app.route("/weather")
-    def weather():
-        current_weather = get_weather()
-        if current_weather.get('main') is not None:
-            model = {
-                'temp_c': current_weather['main']['temp'],
-                'temp_feels_c': current_weather['main']['feels_like'],
-            }
-        else:
-            model = {
-                'error': current_weather
-            }
-
-        return render_template("weather.html", model = model)
-    
-    @app.route("/weather-from-db")
-    def weather_from_db():
-        last_report = WeatherReport.query.order_by(WeatherReport.datetime.desc()).first()
-        if last_report is not None:
-            model = {
-                'temp_c': last_report.temp,
-                'temp_feels_c': last_report.feels_like_temp,
-                'taken_at': last_report.datetime
-            }
-        else:
-            model = {
-                'error': 'Не найдены записи в БД'
-            }
-
-        return render_template('weather_from_db.html', model = model)
-        
     return app

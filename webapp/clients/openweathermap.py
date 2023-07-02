@@ -1,13 +1,12 @@
 import requests
 from flask import current_app
 
-def get_weather():
-    lat = "42.829852"
-    lon = "74.562654"
-    weather_url = f"https://api.openweathermap.org/data/2.5/weather"
+
+def get_weather(lat, lon):
+    weather_url = "https://api.openweathermap.org/data/2.5/weather"
     params = {
-        "lat": lat,
-        "lon": lon,
+        "lat": str(lat),
+        "lon": str(lon),
         "appid": current_app.config['OWM_KEY'],
         "units": "metric"
     }

@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Данные по городу</title>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/weather.js') }}"></script>
+    </head>
+    <body>
+        <div>
+            <select>
+                {% for city in model.cities %}
+                <option value={{city.id}}>{{city.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="weather"></div>
+    </body>
+</html>

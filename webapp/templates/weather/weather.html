@@ -1,0 +1,13 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-warning" role="alert">
+        {% for message in messages %}
+            {{ message }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+{% if model is not none %}
+Температура {{model.id}}, ощущается как {{model.temp_feels_c}} (от {{model.taken_at}})
+{% endif %}
