@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>Последний сохранённый прогноз погоды</title>
+    </head>
+    <body>
+        <h1>
+            {% if model.get('error') is none %}
+                Температура {{model.temp_c}}, ощущается как {{model.temp_feels_c}} (от {{model.taken_at}})
+            {% else %}
+                Произошла ошибка: {{model.error}}
+            {% endif %}
+        </h1>
+    </body>
+</html>
